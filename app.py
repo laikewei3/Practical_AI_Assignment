@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from flask_restx import Api, Resource, fields, Namespace
 from analyze import read_image
 
@@ -56,6 +56,21 @@ def home():
             print(e)
             return render_template('index.html', error="An error occurred while processing the image.")
     return render_template('index.html')
+
+# Analysis route for the API
+@app.route('/api/v1/analysis/', methods=['GET'])
+def analysis():
+    """Analyze the image from the provided URI."""
+    data = request.get_json()
+    image_uri = data.get('uri')
+    if not image_uri:
+        return jsonify({"error": "Image URI is required!"}), 400
+    try:
+        res = read_image(image_uri)
+        return jsonify({"result": res, "image_uri": image_uri})
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "An error occurred while processing the image."}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000, debug=True)

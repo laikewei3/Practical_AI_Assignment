@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "106c3e1e-0642-4042-834c-481f1121bc8e",
+		"name": "PracAI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "27644283"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/api/v1/analysis/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"uri\": \"http://jeroen.github.io/images/testocr.png\"\r\n}"
+				},
+				"url": "http://localhost:3000/api/v1/analysis/"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/v1/analysis/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"uri\": \"http://jeroen.github.io/images/testocr.png\"\r\n}"
+				},
+				"url": "http://localhost:3000/api/v1/analysis/"
+			},
+			"response": []
+		}
+	]
+}
