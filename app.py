@@ -1,41 +1,24 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, render_template
+from flask_restx import Api, Resource, fields, Namespace
 from analyze import read_image
-from flask_restx import Api, Resource, fields
 
 app = Flask(__name__, template_folder='templates')
-api = Api(app, version='1.0', title='Image Analysis API', description='A simple Image Analysis API')
-ns = api.namespace('api/v1', description='Image operations')
 
-@app.route("/")
-def home():
-    return render_template('index.html')
+# Create a blueprint for the API
+from flask import Blueprint
+api_bp = Blueprint('api', __name__, url_prefix='/api/v1')
+api = Api(api_bp, version='1.0', title='Image Analysis API', description='A simple Image Analysis API', doc='/docs')
 
+# Define the namespace
+ns = Namespace('image', description='Image operations')
+api.add_namespace(ns)
 
-# # API at /api/v1/analysis/
-# @app.route("/api/v1/analysis/", methods=['GET'])
-# def analysis():
-#     # Try to get the URI from the JSON
-#     try:
-#         get_json = request.get_json()
-#         image_uri = get_json['uri']
-#     except Exception as error:
-#         return jsonify({'error': 'Missing URI in JSON'}), 400
-#
-#     # Try to get the text from the image
-#     try:
-#         res = read_image(image_uri)
-#
-#         response_data = {
-#             "text": res
-#         }
-#
-#         return jsonify(response_data), 200
-#     except:
-#         return jsonify({'error': 'Error in processing'}), 500
-
+# Define the API model
 image_model = api.model('Image', {
-    'uri': fields.String(required=True, description='The image URI') })
+    'uri': fields.String(required=True, description='The image URI')
+})
 
+# API endpoint for image analysis
 @ns.route('/analysis/')
 class Analysis(Resource):
     @ns.expect(image_model, validate=True)
@@ -55,6 +38,24 @@ class Analysis(Resource):
             print(e)
             api.abort(500, 'Error in processing')
 
+# Register the API blueprint
+app.register_blueprint(api_bp)
+
+# Home route for the HTML page
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    """Render the home page with an image analysis form."""
+    if request.method == 'POST':
+        image_uri = request.form.get('uri')
+        if not image_uri:
+            return render_template('index.html', error="Image URI is required!")
+        try:
+            res = read_image(image_uri)
+            return render_template('index.html', result=res, image_uri=image_uri)
+        except Exception as e:
+            print(e)
+            return render_template('index.html', error="An error occurred while processing the image.")
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000, debug=True)

@@ -29,9 +29,29 @@
         </p>
         <pre>
             <code>
-{
-    "uri": "path/to/your/image.jpg"
-}
+                <h1>Image Analysis</h1>
+                <form method="POST">
+                    <label for="uri">Enter Image URI:</label>
+                    <input type="text" id="uri" name="uri" placeholder="Enter a valid image URL" style="width: 60%; padding: 8px; margin: 10px 0;" required>
+                    <button type="submit" style="background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 16px;">
+                        Analyze
+                    </button>
+                </form>
+
+                <a href="/api/v1/docs" style="text-decoration: none;">
+                    <button style="background-color: #007BFF; color: white; border: none; cursor: pointer; font-size: 16px; margin-top: 20px;">
+                        Go to Swagger Documentation
+                    </button>
+                </a>
+
+                {% if result %}
+                    <h2>Analysis Result:</h2>
+                    <p><strong>Image URI:</strong> {{ image_uri }}</p>
+                    <p><strong>Extracted Text:</strong> {{ result }}</p>
+                {% elif error %}
+                    <h2 style="color: red;">Error:</h2>
+                    <p>{{ error }}</p>
+                {% endif %}
             </code>
         </pre>
     </section>
